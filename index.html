@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Knee Valgus Visualisation</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Plotly for interactive 3D rendering -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+
+<body>
+
+    <main class="app-shell">
+
+        <!-- ==================================================
+             HEADER
+        =================================================== -->
+
+        <header class="app-header">
+
+            <div>
+                <h1>Dynamic Knee Valgus</h1>
+
+                <p class="header-subtitle">
+                    Interactive three-dimensional calculation
+                </p>
+            </div>
+
+        </header>
+
+
+        <!-- ==================================================
+             MAIN CONTENT
+        =================================================== -->
+
+        <section class="content-grid">
+
+
+            <!-- ==============================================
+                 3D VIEW
+            =============================================== -->
+
+            <section class="visual-card">
+
+                <div
+                    id="dkv-plot"
+                    class="plot-container"
+                    aria-label="Interactive three-dimensional dynamic knee valgus visualisation"
+                ></div>
+
+
+                <div class="interaction-bar">
+
+                    <span>
+                        Rotate: drag
+                    </span>
+
+                    <span class="interaction-separator">•</span>
+
+                    <span>
+                        Zoom: mouse wheel
+                    </span>
+
+                    <span class="interaction-separator">•</span>
+
+                    <button
+                        id="reset-view"
+                        class="text-button"
+                        type="button"
+                    >
+                        Reset view
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==============================================
+                 EXPLANATION PANEL
+            =============================================== -->
+
+            <aside class="info-card">
+
+                <div class="info-inner">
+
+
+                    <!-- Step -->
+                    <div
+                        id="step-label"
+                        class="step-label"
+                    >
+                        STEP 1 OF 7
+                    </div>
+
+
+                    <!-- Progress -->
+                    <div
+                        id="progress-bar"
+                        class="progress-bar"
+                        aria-hidden="true"
+                    ></div>
+
+
+                    <!-- Stage text -->
+                    <div class="stage-copy">
+
+                        <h2
+                            id="stage-title"
+                            class="stage-title"
+                        ></h2>
+
+                        <p
+                            id="stage-subtitle"
+                            class="stage-subtitle"
+                        ></p>
+
+                        <p
+                            id="stage-description"
+                            class="stage-description"
+                        ></p>
+
+                    </div>
+
+
+                    <!-- Flexible spacer -->
+                    <div class="flex-spacer"></div>
+
+
+                    <!-- Fixed result slot -->
+                    <div class="result-slot">
+
+                        <div
+                            id="result-card"
+                            class="result-card hidden"
+                        >
+
+                            <div
+                                id="result-value"
+                                class="result-value"
+                            >
+                                0.00°
+                            </div>
+
+                            <div class="result-label">
+                                Dynamic knee valgus
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Navigation -->
+                    <div class="navigation-row">
+
+                        <button
+                            id="back-button"
+                            class="nav-button nav-secondary"
+                            type="button"
+                        >
+                            ← Back
+                        </button>
+
+                        <button
+                            id="next-button"
+                            class="nav-button nav-primary"
+                            type="button"
+                        >
+                            Next →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>

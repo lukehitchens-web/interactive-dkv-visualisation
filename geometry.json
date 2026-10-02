@@ -1,0 +1,264 @@
+{
+  "coordinate_system": {
+    "source": "OpenCap/OpenSim",
+    "x": "anterior-posterior",
+    "y": "vertical",
+    "z": "mediolateral",
+    "display_axis_order": [
+      0,
+      2,
+      1
+    ],
+    "display_axis_sign": [
+      1,
+      1,
+      1
+    ]
+  },
+  "markers": {
+    "r.ASIS_study": [
+      0.7660817,
+      0.9767177,
+      -0.45031
+    ],
+    "L.ASIS_study": [
+      0.6333875,
+      0.9251269,
+      -0.7181503
+    ],
+    "r.PSIS_study": [
+      0.5520277,
+      0.9382253,
+      -0.4430211
+    ],
+    "L.PSIS_study": [
+      0.5004685,
+      0.9173463,
+      -0.5470907
+    ],
+    "r_knee_study": [
+      1.0396785,
+      0.6407685,
+      -0.37987
+    ],
+    "r_ankle_study": [
+      1.0315731,
+      0.2835456,
+      -0.1505906
+    ],
+    "r_toe_study": [
+      1.1637011,
+      0.2142983,
+      -0.1840784
+    ],
+    "r_5meta_study": [
+      1.1366664,
+      0.2587453,
+      -0.1326812
+    ],
+    "r_calc_study": [
+      0.9460582,
+      0.2425059,
+      -0.1651672
+    ],
+    "L_knee_study": [
+      0.8237236,
+      0.4877424,
+      -0.7370358
+    ],
+    "L_ankle_study": [
+      0.5026802,
+      0.380965,
+      -0.5080817
+    ],
+    "L_toe_study": [
+      0.5439002,
+      0.2488337,
+      -0.4513499
+    ],
+    "L_calc_study": [
+      0.4851084,
+      0.4515312,
+      -0.4477048
+    ],
+    "L_5meta_study": [
+      0.4971753,
+      0.2728584,
+      -0.5007463
+    ],
+    "r_shoulder_study": [
+      0.7294378,
+      1.414197,
+      -0.4353275
+    ],
+    "L_shoulder_study": [
+      0.5932473,
+      1.3827932,
+      -0.7459546
+    ],
+    "r_lelbow_study": [
+      0.6408361,
+      1.2526748,
+      -0.170476
+    ],
+    "r_lwrist_study": [
+      0.6584782,
+      1.1125288,
+      0.0392491
+    ],
+    "L_lelbow_study": [
+      0.4709195,
+      1.0830074,
+      -0.8749483
+    ],
+    "L_lwrist_study": [
+      0.7010295,
+      1.1065046,
+      -0.967664
+    ]
+  },
+  "segments": [
+    [
+      "r.ASIS_study",
+      "L.ASIS_study"
+    ],
+    [
+      "r.PSIS_study",
+      "L.PSIS_study"
+    ],
+    [
+      "r.ASIS_study",
+      "r.PSIS_study"
+    ],
+    [
+      "L.ASIS_study",
+      "L.PSIS_study"
+    ],
+    [
+      "r.ASIS_study",
+      "r_knee_study"
+    ],
+    [
+      "r_knee_study",
+      "r_ankle_study"
+    ],
+    [
+      "L.ASIS_study",
+      "L_knee_study"
+    ],
+    [
+      "L_knee_study",
+      "L_ankle_study"
+    ],
+    [
+      "r_shoulder_study",
+      "L_shoulder_study"
+    ],
+    [
+      "r.ASIS_study",
+      "r_shoulder_study"
+    ],
+    [
+      "L.ASIS_study",
+      "L_shoulder_study"
+    ],
+    [
+      "r_shoulder_study",
+      "r_lelbow_study"
+    ],
+    [
+      "r_lelbow_study",
+      "r_lwrist_study"
+    ],
+    [
+      "L_shoulder_study",
+      "L_lelbow_study"
+    ],
+    [
+      "L_lelbow_study",
+      "L_lwrist_study"
+    ],
+    [
+      "r_ankle_study",
+      "r_calc_study"
+    ],
+    [
+      "r_ankle_study",
+      "r_toe_study"
+    ],
+    [
+      "r_calc_study",
+      "r_toe_study"
+    ],
+    [
+      "r_ankle_study",
+      "r_5meta_study"
+    ],
+    [
+      "r_calc_study",
+      "r_5meta_study"
+    ],
+    [
+      "r_toe_study",
+      "r_5meta_study"
+    ],
+    [
+      "L_ankle_study",
+      "L_calc_study"
+    ],
+    [
+      "L_ankle_study",
+      "L_toe_study"
+    ],
+    [
+      "L_calc_study",
+      "L_toe_study"
+    ],
+    [
+      "L_ankle_study",
+      "L_5meta_study"
+    ],
+    [
+      "L_calc_study",
+      "L_5meta_study"
+    ],
+    [
+      "L_toe_study",
+      "L_5meta_study"
+    ]
+  ],
+  "dkv_markers": {
+    "asis": "r.ASIS_study",
+    "knee": "r_knee_study",
+    "ankle": "r_ankle_study",
+    "meta5": "r_5meta_study"
+  },
+  "dkv_geometry": {
+    "thigh_vector": [
+      0.2735968,
+      -0.33594920000000006,
+      0.07044
+    ],
+    "plane_normal": [
+      -0.06954001201353738,
+      0.3733579827375046,
+      0.9250772959355009
+    ],
+    "projected_thigh_vector": [
+      0.26808277803808955,
+      -0.306344601771452,
+      0.14379196498470673
+    ],
+    "projected_knee": [
+      1.0341644780380896,
+      0.6703730982285481,
+      -0.3065180350152933
+    ],
+    "perpendicular_vector": [
+      0.005514021961910443,
+      -0.029604598228548072,
+      -0.07335196498470672
+    ],
+    "dkv_angle_degrees": 10.407107153819465
+  }
+}
