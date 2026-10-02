@@ -5,16 +5,20 @@
 
    CAMERA BEHAVIOUR
 
-   drag left/right  = azimuth
-   drag up/down     = elevation
-   mouse wheel      = zoom
+   Desktop:
+   - drag left/right  = azimuth
+   - drag up/down     = elevation
+   - mouse wheel      = zoom
+
+   Phone / touch:
+   - one-finger drag  = rotate
+   - two-finger pinch = zoom
 
    No translation.
    No roll.
    No flipping.
 
-   Horizontal drag direction:
-   dragging RIGHT rotates the view towards the participant's
+   Dragging RIGHT rotates the view towards the participant's
    LEFT side when starting from the front-facing view.
 ========================================================== */
 
@@ -148,6 +152,17 @@ const COLOURS = {
 
 
 /* ==========================================================
+   DEVICE HELPERS
+========================================================== */
+
+function isPhoneLayout() {
+
+    return window.matchMedia("(max-width: 650px)").matches;
+
+}
+
+
+/* ==========================================================
    CAMERA SETTINGS
 ========================================================== */
 
@@ -157,9 +172,18 @@ const INITIAL_ELEVATION_DEG = 18;
 
 
 /*
+   Desktop starting zoom.
+*/
+const DESKTOP_INITIAL_CAMERA_DISTANCE = 1.85;
+
+
+/*
+   Phone starting zoom:
+   50% more zoomed in than desktop.
    Smaller distance = closer / more zoomed in.
 */
-const INITIAL_CAMERA_DISTANCE = 1.85;
+const PHONE_INITIAL_CAMERA_DISTANCE =
+    DESKTOP_INITIAL_CAMERA_DISTANCE * 0.625;
 
 
 /*
@@ -183,7 +207,21 @@ const MAX_CAMERA_DISTANCE = 4.00;
 */
 const ROTATION_SENSITIVITY = 0.30;
 
-const ZOOM_SENSITIVITY = 0.0012;
+const WHEEL_ZOOM_SENSITIVITY = 0.0012;
+
+
+/*
+   Pinch sensitivity is handled by direct pinch-distance ratio.
+*/
+
+
+function getInitialCameraDistance() {
+
+    return isPhoneLayout()
+        ? PHONE_INITIAL_CAMERA_DISTANCE
+        : DESKTOP_INITIAL_CAMERA_DISTANCE;
+
+}
 
 
 /* ==========================================================
@@ -213,19 +251,25 @@ let cameraElevation =
     INITIAL_ELEVATION_DEG;
 
 let cameraDistance =
-    INITIAL_CAMERA_DISTANCE;
+    getInitialCameraDistance();
 
 
 /*
-   Pointer drag state.
+   Pointer drag / pinch state.
 */
 let isDragging = false;
+
+let isPinching = false;
 
 let lastPointerX = 0;
 
 let lastPointerY = 0;
 
 let activePointerId = null;
+
+let lastPinchDistance = null;
+
+const activePointers = new Map();
 
 
 /* ==========================================================
@@ -1131,6 +1175,59 @@ function applyCamera() {
 
 
 /* ==========================================================
+   PINCH HELPERS
+========================================================== */
+
+function getCurrentPinchDistance() {
+
+    const pointers =
+        Array.from(
+            activePointers.values()
+        );
+
+
+    if (
+        pointers.length < 2
+    ) {
+
+        return null;
+
+    }
+
+
+    const p1 = pointers[0];
+    const p2 = pointers[1];
+
+
+    const dx =
+        p2.x - p1.x;
+
+    const dy =
+        p2.y - p1.y;
+
+
+    return Math.sqrt(
+        dx * dx + dy * dy
+    );
+
+}
+
+
+function clampCameraDistance() {
+
+    cameraDistance =
+        Math.max(
+            MIN_CAMERA_DISTANCE,
+            Math.min(
+                MAX_CAMERA_DISTANCE,
+                cameraDistance
+            )
+        );
+
+}
+
+
+/* ==========================================================
    CUSTOM CAMERA CONTROLS
 ========================================================== */
 
@@ -1170,17 +1267,45 @@ function attachCustomCameraControls() {
             event.stopPropagation();
 
 
-            isDragging = true;
+            activePointers.set(
+                event.pointerId,
+                {
+                    x: event.clientX,
+                    y: event.clientY
+                }
+            );
 
-            activePointerId =
-                event.pointerId;
+
+            if (
+                activePointers.size === 1
+            ) {
+
+                isDragging = true;
+                isPinching = false;
+
+                activePointerId =
+                    event.pointerId;
 
 
-            lastPointerX =
-                event.clientX;
+                lastPointerX =
+                    event.clientX;
 
-            lastPointerY =
-                event.clientY;
+                lastPointerY =
+                    event.clientY;
+
+            } else if (
+                activePointers.size >= 2
+            ) {
+
+                isDragging = false;
+                isPinching = true;
+
+                activePointerId = null;
+
+                lastPinchDistance =
+                    getCurrentPinchDistance();
+
+            }
 
 
             plotElement.style.cursor =
@@ -1221,9 +1346,9 @@ function attachCustomCameraControls() {
         event => {
 
             if (
-                !isDragging
-                ||
-                event.pointerId !== activePointerId
+                !activePointers.has(
+                    event.pointerId
+                )
             ) {
 
                 return;
@@ -1234,6 +1359,83 @@ function attachCustomCameraControls() {
             event.preventDefault();
 
             event.stopPropagation();
+
+
+            activePointers.set(
+                event.pointerId,
+                {
+                    x: event.clientX,
+                    y: event.clientY
+                }
+            );
+
+
+            /* ==================================================
+               TWO-FINGER PINCH = ZOOM
+            ================================================== */
+
+            if (
+                isPinching
+                &&
+                activePointers.size >= 2
+            ) {
+
+                const currentPinchDistance =
+                    getCurrentPinchDistance();
+
+
+                if (
+                    lastPinchDistance !== null
+                    &&
+                    currentPinchDistance !== null
+                    &&
+                    currentPinchDistance > 0
+                ) {
+
+                    /*
+                       Fingers further apart = zoom in
+                       => reduce camera distance
+                    */
+
+                    const zoomFactor =
+                        lastPinchDistance
+                        /
+                        currentPinchDistance;
+
+
+                    cameraDistance *=
+                        zoomFactor;
+
+
+                    clampCameraDistance();
+
+                    applyCamera();
+
+                }
+
+
+                lastPinchDistance =
+                    currentPinchDistance;
+
+
+                return;
+
+            }
+
+
+            /* ==================================================
+               SINGLE-FINGER / SINGLE-POINTER DRAG = ROTATE
+            ================================================== */
+
+            if (
+                !isDragging
+                ||
+                event.pointerId !== activePointerId
+            ) {
+
+                return;
+
+            }
 
 
             const deltaX =
@@ -1257,9 +1459,6 @@ function attachCustomCameraControls() {
 
             /* ==================================================
                HORIZONTAL DRAG = AZIMUTH
-
-               IMPORTANT:
-               Direction has been REVERSED.
 
                Drag RIGHT:
                    cameraAzimuth decreases.
@@ -1338,33 +1537,23 @@ function attachCustomCameraControls() {
 
 
     /* ------------------------------------------------------
-       END DRAG
+       END POINTER
     ------------------------------------------------------ */
 
-    const stopDragging =
+    const stopInteraction =
         event => {
 
             if (
-                event.pointerId !== activePointerId
+                activePointers.has(
+                    event.pointerId
+                )
             ) {
 
-                return;
+                activePointers.delete(
+                    event.pointerId
+                );
 
             }
-
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            isDragging = false;
-
-            activePointerId = null;
-
-
-            plotElement.style.cursor =
-                "grab";
 
 
             try {
@@ -1381,6 +1570,64 @@ function attachCustomCameraControls() {
 
             }
 
+
+            if (
+                activePointers.size >= 2
+            ) {
+
+                isPinching = true;
+                isDragging = false;
+                activePointerId = null;
+
+                lastPinchDistance =
+                    getCurrentPinchDistance();
+
+                return;
+
+            }
+
+
+            if (
+                activePointers.size === 1
+            ) {
+
+                const remainingEntry =
+                    Array.from(
+                        activePointers.entries()
+                    )[0];
+
+
+                activePointerId =
+                    remainingEntry[0];
+
+
+                lastPointerX =
+                    remainingEntry[1].x;
+
+                lastPointerY =
+                    remainingEntry[1].y;
+
+
+                isDragging = true;
+                isPinching = false;
+                lastPinchDistance = null;
+
+                plotElement.style.cursor =
+                    "grabbing";
+
+                return;
+
+            }
+
+
+            isDragging = false;
+            isPinching = false;
+            activePointerId = null;
+            lastPinchDistance = null;
+
+            plotElement.style.cursor =
+                "grab";
+
         };
 
 
@@ -1388,7 +1635,7 @@ function attachCustomCameraControls() {
 
         "pointerup",
 
-        stopDragging,
+        stopInteraction,
 
         {
             capture: true
@@ -1401,7 +1648,7 @@ function attachCustomCameraControls() {
 
         "pointercancel",
 
-        stopDragging,
+        stopInteraction,
 
         {
             capture: true
@@ -1411,7 +1658,7 @@ function attachCustomCameraControls() {
 
 
     /* ------------------------------------------------------
-       WHEEL = ZOOM ONLY
+       WHEEL = ZOOM ONLY (DESKTOP / LAPTOP)
     ------------------------------------------------------ */
 
     plotElement.addEventListener(
@@ -1430,7 +1677,7 @@ function attachCustomCameraControls() {
 
                     event.deltaY
                     *
-                    ZOOM_SENSITIVITY
+                    WHEEL_ZOOM_SENSITIVITY
 
                 );
 
@@ -1439,21 +1686,7 @@ function attachCustomCameraControls() {
                 zoomFactor;
 
 
-            cameraDistance =
-                Math.max(
-
-                    MIN_CAMERA_DISTANCE,
-
-                    Math.min(
-
-                        MAX_CAMERA_DISTANCE,
-
-                        cameraDistance
-
-                    )
-
-                );
-
+            clampCameraDistance();
 
             applyCamera();
 
@@ -2803,7 +3036,7 @@ function resetView() {
 
 
     cameraDistance =
-        INITIAL_CAMERA_DISTANCE;
+        getInitialCameraDistance();
 
 
     applyCamera();

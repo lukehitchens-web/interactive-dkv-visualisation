@@ -493,28 +493,145 @@ body {
         font-size: 25px;
     }
 
+    /* ------------------------------------------------------
+       MOBILE 3D PANEL
+
+       Desktop/tablet sizing is untouched.
+
+       The phone plot is reduced from 450 px to 225 px,
+       i.e. approximately 50% of the previous plot height.
+    ------------------------------------------------------ */
+
     .visual-card {
-        min-height: 510px;
+        min-height: 0;
+
+        grid-template-rows:
+            225px
+            auto;
     }
 
     .plot-container {
-        min-height: 450px;
+        height: 225px;
+        min-height: 225px;
     }
 
-    .info-inner {
-        padding: 22px;
+    .interaction-bar {
+        flex-wrap: wrap;
+
+        gap: 7px;
+
+        padding:
+            8px
+            10px;
+
+        font-size: 12px;
     }
+
+    /* ------------------------------------------------------
+       MOBILE INFORMATION PANEL
+
+       Let the content take its natural height so the user can
+       scroll down for the longer explanation when required.
+    ------------------------------------------------------ */
+
+    .info-inner {
+        min-height: 0;
+
+        padding:
+            18px
+            18px
+            22px;
+    }
+
+    /* ------------------------------------------------------
+       MOBILE ORDER
+
+       The navigation buttons are moved to the very top of the
+       information card, directly below the 3D visualisation.
+
+       Desktop order remains unchanged because these order
+       values exist only inside the phone media query.
+    ------------------------------------------------------ */
+
+    .navigation-row {
+        order: 1;
+
+        margin-bottom: 18px;
+    }
+
+    .step-label {
+        order: 2;
+    }
+
+    .progress-bar {
+        order: 3;
+
+        margin:
+            10px
+            0
+            20px;
+    }
+
+    .stage-copy {
+        order: 4;
+
+        max-width: none;
+    }
+
+    .flex-spacer {
+        order: 5;
+
+        display: none;
+    }
+
+    .result-slot {
+        order: 6;
+
+        height: auto;
+
+        margin:
+            18px
+            0
+            0;
+    }
+
+    /* Do not reserve an empty result area on phone until the
+       final DKV result is actually shown. */
+    .result-card.hidden {
+        display: none;
+    }
+
+    /* ------------------------------------------------------
+       MOBILE BUTTONS
+    ------------------------------------------------------ */
+
+    .nav-button {
+        flex: 1;
+
+        min-width: 0;
+
+        padding:
+            12px
+            14px;
+    }
+
+    /* ------------------------------------------------------
+       MOBILE TYPOGRAPHY
+    ------------------------------------------------------ */
 
     .stage-title {
         font-size: 24px;
     }
 
-    .stage-description {
-        font-size: 15px;
+    .stage-subtitle {
+        margin:
+            10px
+            0
+            16px;
     }
 
-    .interaction-bar {
-        flex-wrap: wrap;
+    .stage-description {
+        font-size: 15px;
     }
 
 }
